@@ -1,6 +1,9 @@
+/// <summary>
+/// https://leetcode-cn.com/problems/balanced-binary-tree/
+/// </summary>
 public partial class Solution
 {
-    public System.Tuple<bool, int> GetBalancedInfo(TreeNode root)
+    private System.Tuple<bool, int> GetBalancedInfo(TreeNode root)
     {
         if (root == null)
         {

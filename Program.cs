@@ -42,9 +42,18 @@ namespace LeetCodeCS
             var inputArr = new object[] { 3, 9, 20, null, null, 15, 7 };
             var root = MakeTreeNode(inputArr);
             Console.WriteLine($"input: {string.Join(",", inputArr)}  MaxDepth: {s.MaxDepth(root)}");
-            // inputArr = new object[] {1,2,2,3,3,null,null,4,4 };
-            // root = MakeTreeNode(inputArr);
+
             Console.WriteLine($"input: {string.Join(",", inputArr)}  IsBalanced: {s.IsBalanced(root)}");
+            inputArr = new object[] {1,2,2,3,3,null,null,4,4 };
+            root = MakeTreeNode(inputArr);
+            Console.WriteLine($"input: {string.Join(",", inputArr)}  IsBalanced: {s.IsBalanced(root)}");
+
+            inputArr = new object[]{1,2,3};
+            root = MakeTreeNode(inputArr);
+            Console.WriteLine($"input: {string.Join(",", inputArr)}  MaxPathSum: {s.MaxPathSum(root)}");
+            inputArr = new object[]{-10,9,20,null,null,15,7};
+            root = MakeTreeNode(inputArr);
+            Console.WriteLine($"input: {string.Join(",", inputArr)}  MaxPathSum: {s.MaxPathSum(root)}");
         }
     }
 }
