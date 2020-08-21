@@ -4,29 +4,29 @@ using System.Collections.Generic;
 /// </summary>
 public partial class Solution
 {
-    // private void CollectLevelVals(TreeNode root, IList<IList<int>> collection, int depth)
-    // {
-    //     if (root == null)
-    //     {
-    //         return;
-    //     }
-    //     if (depth == collection.Count)
-    //     {
-    //         collection.Add(new List<int>());
-    //     }
-    //     var clist = collection[depth];
-    //     clist.Add(root.val);
-    //     CollectLevelVals(root.left, collection, depth + 1);
-    //     CollectLevelVals(root.right, collection, depth + 1);
-    // }
-    // public IList<IList<int>> LevelOrder(TreeNode root)
-    // {
-    //     var depthList = new List<IList<int>>();
-    //     CollectLevelVals(root, depthList, 0);
-    //     return depthList;
-    // }
-
+    private void CollectLevelVals(TreeNode root, IList<IList<int>> collection, int depth)
+    {
+        if (root == null)
+        {
+            return;
+        }
+        if (depth == collection.Count)
+        {
+            collection.Add(new List<int>());
+        }
+        var clist = collection[depth];
+        clist.Add(root.val);
+        CollectLevelVals(root.left, collection, depth + 1);
+        CollectLevelVals(root.right, collection, depth + 1);
+    }
     public IList<IList<int>> LevelOrder(TreeNode root)
+    {
+        var depthList = new List<IList<int>>();
+        CollectLevelVals(root, depthList, 0);
+        return depthList;
+    }
+
+    public IList<IList<int>> LevelOrderUseQueue(TreeNode root)
     {
         var queue = new Queue<TreeNode>();
         var depthList = new List<IList<int>>();

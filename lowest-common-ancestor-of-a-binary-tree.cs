@@ -3,35 +3,36 @@
 /// </summary>
 public partial class Solution
 {
-    // private int CountInputNode(TreeNode root, TreeNode p, TreeNode q, ref TreeNode result)
-    // {
-    //     if (root == null || result != null)
-    //     {
-    //         return 0;
-    //     }
-    //     var count = 0;
-    //     if (root.val == p.val)
-    //     {
-    //         count++;
-    //     }
-    //     else if (root.val == q.val)
-    //     {
-    //         count++;
-    //     }
-    //     count += CountInputNode(root.left, p, q, ref result);
-    //     count += CountInputNode(root.right, p, q, ref result);
-    //     if (count == 2 && result == null)
-    //     {
-    //         result = root;
-    //     }
-    //     return count;
-    // }
-    // public TreeNode LowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q)
-    // {
-    //     TreeNode result = null;
-    //     CountInputNode(root, p, q, ref result);
-    //     return result;
-    // }
+    private int CountInputNode(TreeNode root, TreeNode p, TreeNode q, ref TreeNode result)
+    {
+        if (root == null || result != null)
+        {
+            return 0;
+        }
+        var count = 0;
+        if (root.val == p.val)
+        {
+            count++;
+        }
+        else if (root.val == q.val)
+        {
+            count++;
+        }
+        count += CountInputNode(root.left, p, q, ref result);
+        count += CountInputNode(root.right, p, q, ref result);
+        if (count == 2 && result == null)
+        {
+            result = root;
+        }
+        return count;
+    }
+    public TreeNode LowestCommonAncestorUseIncCount(TreeNode root, TreeNode p, TreeNode q)
+    {
+        TreeNode result = null;
+        CountInputNode(root, p, q, ref result);
+        return result;
+    }
+    
     public TreeNode LowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q)
     {
         if (root == null)
