@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Text;
+using System;
 using System.Collections.Generic;
 public class TreeNode
 {
@@ -35,25 +36,52 @@ namespace LeetCodeCS
             }
             return ret;
         }
+        static string TreeArrayToString(object[] objs)
+        {
+            var str = new StringBuilder();
+            for (int i = 0; i < objs.Length; i++)
+            {
+                object o = objs[i];
+                if (o == null)
+                {
+                    str.Append("null");
+                }
+                else
+                {
+                    str.Append(o.ToString());
+                }
+                if (i < objs.Length - 1)
+                {
+                    str.Append(',');
+                }
+            }
+            return str.ToString();
+        }
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
             var s = new Solution();
             var inputArr = new object[] { 3, 9, 20, null, null, 15, 7 };
             var root = MakeTreeNode(inputArr);
-            Console.WriteLine($"input: {string.Join(",", inputArr)}  MaxDepth: {s.MaxDepth(root)}");
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  MaxDepth: {s.MaxDepth(root)}");
 
-            Console.WriteLine($"input: {string.Join(",", inputArr)}  IsBalanced: {s.IsBalanced(root)}");
-            inputArr = new object[] {1,2,2,3,3,null,null,4,4 };
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsBalanced: {s.IsBalanced(root)}");
+            inputArr = new object[] { 1, 2, 2, 3, 3, null, null, 4, 4 };
             root = MakeTreeNode(inputArr);
-            Console.WriteLine($"input: {string.Join(",", inputArr)}  IsBalanced: {s.IsBalanced(root)}");
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsBalanced: {s.IsBalanced(root)}");
 
-            inputArr = new object[]{1,2,3};
+            inputArr = new object[] { 1, 2, 3 };
             root = MakeTreeNode(inputArr);
-            Console.WriteLine($"input: {string.Join(",", inputArr)}  MaxPathSum: {s.MaxPathSum(root)}");
-            inputArr = new object[]{-10,9,20,null,null,15,7};
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  MaxPathSum: {s.MaxPathSum(root)}");
+            inputArr = new object[] { -10, 9, 20, null, null, 15, 7 };
             root = MakeTreeNode(inputArr);
-            Console.WriteLine($"input: {string.Join(",", inputArr)}  MaxPathSum: {s.MaxPathSum(root)}");
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  MaxPathSum: {s.MaxPathSum(root)}");
+
+            inputArr = new object[] { 3, 5, 1, 6, 2, 0, 8, null, null, 7, 4 };
+            root = MakeTreeNode(inputArr);
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  LowestCommonAncestor: {s.LowestCommonAncestor(root, new TreeNode(5), new TreeNode(1))?.val}");
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  LowestCommonAncestor: {s.LowestCommonAncestor(root, new TreeNode(4), new TreeNode(7))?.val}");
+
         }
     }
 }
