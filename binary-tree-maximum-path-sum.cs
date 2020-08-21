@@ -1,7 +1,7 @@
+using System;
 /// <summary>
 /// https://leetcode-cn.com/problems/binary-tree-maximum-path-sum/
 /// </summary>
-using System;
 public partial class Solution
 {
     //最大路径和、单边路径和

@@ -1,6 +1,8 @@
 ﻿using System.Text;
 using System;
 using System.Collections.Generic;
+using System.Collections;
+
 public class TreeNode
 {
     public int val;
@@ -57,6 +59,29 @@ namespace LeetCodeCS
             }
             return str.ToString();
         }
+        static string ListToString(IList l)
+        {
+            var str = new StringBuilder();
+            str.Append('[');
+            for (var i = 0; i < l.Count; i++)
+            {
+                var o = l[i];
+                if (o is IList subL)
+                {
+                    str.Append(ListToString(subL));
+                }
+                else
+                {
+                    str.Append(o.ToString());
+                }
+                if (i < l.Count - 1)
+                {
+                    str.Append(',');
+                }
+            }
+            str.Append(']');
+            return str.ToString();
+        }
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
@@ -82,6 +107,9 @@ namespace LeetCodeCS
             Console.WriteLine($"input: {TreeArrayToString(inputArr)}  LowestCommonAncestor: {s.LowestCommonAncestor(root, new TreeNode(5), new TreeNode(1))?.val}");
             Console.WriteLine($"input: {TreeArrayToString(inputArr)}  LowestCommonAncestor: {s.LowestCommonAncestor(root, new TreeNode(4), new TreeNode(7))?.val}");
 
+            inputArr = new object[] { 3, 9, 20, null, null, 15, 7 };
+            root = MakeTreeNode(inputArr);
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  LowestCommonAncestor: {ListToString(s.LevelOrder(root) as IList)}");
         }
     }
 }
