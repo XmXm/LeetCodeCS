@@ -109,8 +109,28 @@ namespace LeetCodeCS
 
             inputArr = new object[] { 3, 9, 20, null, null, 15, 7 };
             root = MakeTreeNode(inputArr);
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  LowestCommonAncestor: {ListToString(s.LevelOrder(root) as IList)}");
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  LowestCommonAncestor: {ListToString(s.LevelOrderBottom(root) as IList)}");
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  LevelOrder: {ListToString(s.LevelOrder(root) as IList)}");
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  LevelOrderBottom: {ListToString(s.LevelOrderBottom(root) as IList)}");
+
+            inputArr = new object[] { 2, 1, 3 };
+            root = MakeTreeNode(inputArr);
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsValidBST: {s.IsValidBST(root)}");
+
+            inputArr = new object[] { 5, 1, 4, null, null, 3, 6 };
+            root = MakeTreeNode(inputArr);
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsValidBST: {s.IsValidBST(root)}");
+
+            inputArr = new object[] {10,5,15,null,null,6,20};
+            root = MakeTreeNode(inputArr);
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsValidBST: {s.IsValidBST(root)}");
+            
+            inputArr = new object[] {10,5,15,null,null,13,20};
+            root = MakeTreeNode(inputArr);
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsValidBST: {s.IsValidBST(root)}");
+
+            inputArr = new object[] {3,1,5,0,2,4,6,null,null,null,3};
+            root = MakeTreeNode(inputArr);
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsValidBST: {s.IsValidBST(root)}");
         }
     }
 }
