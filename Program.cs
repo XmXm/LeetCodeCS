@@ -110,6 +110,7 @@ namespace LeetCodeCS
             inputArr = new object[] { 3, 9, 20, null, null, 15, 7 };
             root = MakeTreeNode(inputArr);
             Console.WriteLine($"input: {TreeArrayToString(inputArr)}  LowestCommonAncestor: {ListToString(s.LevelOrder(root) as IList)}");
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  LowestCommonAncestor: {ListToString(s.LevelOrderBottom(root) as IList)}");
         }
     }
 }
