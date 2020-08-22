@@ -128,6 +128,14 @@ namespace LeetCodeCS
             root = MakeTreeNode(inputArr);
             Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsValidBST: {s.IsValidBST(root)}");
 
+            inputArr = new object[] { 3, 9, 20, null, null, 15, 7 };
+            root = MakeTreeNode(inputArr);
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  ZigzagLevelOrder: {ListToString(s.ZigzagLevelOrder(root) as IList)}");
+
+            inputArr = new object[] {3,1,5,0,2,4,6,null,null,null,3};
+            root = MakeTreeNode(inputArr);
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  ZigzagLevelOrder: {ListToString(s.ZigzagLevelOrder(root) as IList)}");
+            
             inputArr = new object[] {3,1,5,0,2,4,6,null,null,null,3};
             root = MakeTreeNode(inputArr);
             Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsValidBST: {s.IsValidBST(root)}");
