@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
+using System.Reflection;
 
 public class TreeNode
 {
@@ -64,6 +66,38 @@ public class TreeNode
             }
         }
     }
+
+    public static TreeNode Parse(string str)
+    {
+        var objs = str.Replace("[", "").Replace("]", "").Split(',', StringSplitOptions.RemoveEmptyEntries).Select(m => int.TryParse(m, out var num) ? num : null as object).ToArray();
+        if (objs.Length == 0)
+        {
+            return null;
+        }
+        return new TreeNode(objs);
+    }
+    public override string ToString()
+    {
+        var str = new StringBuilder();
+        var objs = ToArray();
+        for (int i = 0; i < objs.Length; i++)
+        {
+            object o = objs[i];
+            if (o == null)
+            {
+                str.Append("null");
+            }
+            else
+            {
+                str.Append(o.ToString());
+            }
+            if (i < objs.Length - 1)
+            {
+                str.Append(',');
+            }
+        }
+        return str.ToString();
+    }
 }
 
 
@@ -81,6 +115,15 @@ public class ListNode
             p = p.next;
         }
     }
+    public static ListNode Parse(string str)
+    {
+        var objs = str.Replace("[", "").Replace("]", "").Split(',', StringSplitOptions.RemoveEmptyEntries).Select(m => int.Parse(m)).ToArray();
+        if (objs.Length == 0)
+        {
+            return null;
+        }
+        return new ListNode(objs);
+    }
     public int[] ToArray()
     {
         var list = new List<int>();
@@ -92,136 +135,138 @@ public class ListNode
         }
         return list.ToArray();
     }
+    public override string ToString()
+    {
+        return ToArray().ToListString();
+    }
 }
 
-
+public static class ExtentionMethod
+{
+    public static string ToListString(this IList l)
+    {
+        var str = new StringBuilder();
+        str.Append('[');
+        for (var i = 0; i < l.Count; i++)
+        {
+            var o = l[i];
+            if (o is IList subL)
+            {
+                str.Append(subL.ToListString());
+            }
+            else
+            {
+                str.Append(o.ToString());
+            }
+            if (i < l.Count - 1)
+            {
+                str.Append(',');
+            }
+        }
+        str.Append(']');
+        return str.ToString();
+    }
+}
 namespace LeetCodeCS
 {
     class Program
     {
-        static string TreeArrayToString(object[] objs)
+        private static readonly Dictionary<Type, MethodInfo[]> sCacheStaticMethods = new Dictionary<Type, MethodInfo[]>();
+        private static readonly Dictionary<Type, MethodInfo[]> sCacheInstanceMethods = new Dictionary<Type, MethodInfo[]>();
+        public static object InvokeStaticMethod(Type t, string methodName, params object[] args)
         {
-            var str = new StringBuilder();
-            for (int i = 0; i < objs.Length; i++)
+            if (!sCacheStaticMethods.TryGetValue(t, out var methodInfos))
             {
-                object o = objs[i];
-                if (o == null)
-                {
-                    str.Append("null");
-                }
-                else
-                {
-                    str.Append(o.ToString());
-                }
-                if (i < objs.Length - 1)
-                {
-                    str.Append(',');
-                }
+                methodInfos = t.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+                sCacheStaticMethods.Add(t, methodInfos);
             }
-            return str.ToString();
+            var ms = methodInfos.FirstOrDefault(m =>
+            {
+                if (m.Name != methodName)
+                {
+                    return false;
+                }
+
+                var ps = m.GetParameters();
+                return !ps.Where((t1, i) => !t1.ParameterType.IsAssignableFrom(args[i]?.GetType())).Any();
+            });
+            return ms?.Invoke(null, args);
         }
-        static string ListToString(IList l)
+        public static object InvokeInstanceMethod(object o, string methodName, params object[] args)
         {
-            var str = new StringBuilder();
-            str.Append('[');
-            for (var i = 0; i < l.Count; i++)
+            var t = o.GetType();
+            if (!sCacheInstanceMethods.TryGetValue(t, out var methodInfos))
             {
-                var o = l[i];
-                if (o is IList subL)
-                {
-                    str.Append(ListToString(subL));
-                }
-                else
-                {
-                    str.Append(o.ToString());
-                }
-                if (i < l.Count - 1)
-                {
-                    str.Append(',');
-                }
+                methodInfos = o.GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+                sCacheInstanceMethods.Add(t, methodInfos);
             }
-            str.Append(']');
-            return str.ToString();
+
+            var ms = methodInfos.FirstOrDefault(m =>
+            {
+                if (m.Name != methodName)
+                {
+                    return false;
+                }
+
+                var ps = m.GetParameters();
+                return !ps.Where((t1, i) => !t1.ParameterType.IsAssignableFrom(args[i]?.GetType())).Any();
+            });
+            return ms?.Invoke(o, args);
+        }
+        public static string Object2String(object o)
+        {
+            if (o is IList list)
+            {
+                return list.ToListString();
+            }
+            return o?.ToString();
+        }
+        private static Solution sSolution = new Solution();
+        static void NewCase(string methodName, params object[] objs)
+        {
+            Console.WriteLine($"###############{methodName}###############");
+            Console.WriteLine("Input:");
+            foreach (var o in objs)
+            {
+                Console.WriteLine(Object2String(o));
+            }
+            var result = InvokeInstanceMethod(sSolution, methodName, objs);
+            Console.WriteLine("Output:");
+            Console.WriteLine(Object2String(result));
+            Console.WriteLine("---------------------------------------------------");
         }
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
             var s = new Solution();
-            var inputArr = new object[] { 3, 9, 20, null, null, 15, 7 };
-            var root = new TreeNode(inputArr);
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  MaxDepth: {s.MaxDepth(root)}");
+            var root = TreeNode.Parse("[3, 9, 20, null, null, 15, 7]");
+            Console.WriteLine($"input: {root}  MaxDepth: {s.MaxDepth(root)}");
+            //二叉树
+            NewCase(nameof(Solution.MaxDepth), TreeNode.Parse("[3, 9, 20, null, null, 15, 7]"));
+            NewCase(nameof(Solution.IsBalanced), TreeNode.Parse("[3, 9, 20, null, null, 15, 7]"));
+            NewCase(nameof(Solution.IsBalanced), TreeNode.Parse("[1, 2, 2, 3, 3, null, null, 4, 4]"));
+            NewCase(nameof(Solution.MaxPathSum), TreeNode.Parse("[1, 2, 3]"));
+            NewCase(nameof(Solution.MaxPathSum), TreeNode.Parse("[-10, 9, 20, null, null, 15, 7]"));
+            NewCase(nameof(Solution.LowestCommonAncestor), TreeNode.Parse("[3, 5, 1, 6, 2, 0, 8, null, null, 7, 4]"), new TreeNode(5), new TreeNode(1));
+            NewCase(nameof(Solution.LowestCommonAncestor), TreeNode.Parse("[3, 5, 1, 6, 2, 0, 8, null, null, 7, 4]"), new TreeNode(4), new TreeNode(7));
+            NewCase(nameof(Solution.LevelOrder), TreeNode.Parse("[3, 9, 20, null, null, 15, 7]"));
+            NewCase(nameof(Solution.LevelOrderBottom), TreeNode.Parse("[3, 9, 20, null, null, 15, 7]"));
+            NewCase(nameof(Solution.ZigzagLevelOrder), TreeNode.Parse("[3, 9, 20, null, null, 15, 7]"));
+            NewCase(nameof(Solution.ZigzagLevelOrder), TreeNode.Parse("[3, 1, 5, 0, 2, 4, 6, null, null, null, 3]"));
+            NewCase(nameof(Solution.IsValidBST), TreeNode.Parse("[2, 1, 3]"));
+            NewCase(nameof(Solution.IsValidBST), TreeNode.Parse("[5, 1, 4, null, null, 3, 6]"));
+            NewCase(nameof(Solution.IsValidBST), TreeNode.Parse("[10, 5, 15, null, null, 6, 20]"));
+            NewCase(nameof(Solution.IsValidBST), TreeNode.Parse("[10, 5, 15, null, null, 13, 20]"));
+            NewCase(nameof(Solution.IsValidBST), TreeNode.Parse("[3, 1, 5, 0, 2, 4, 6, null, null, null, 3]"));
+            NewCase(nameof(Solution.InsertIntoBST), TreeNode.Parse("[4, 2, 7, 1, 3]"), 5);
 
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsBalanced: {s.IsBalanced(root)}");
-            inputArr = new object[] { 1, 2, 2, 3, 3, null, null, 4, 4 };
-            root = new TreeNode(inputArr);
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsBalanced: {s.IsBalanced(root)}");
+            //链表
+            NewCase(nameof(Solution.DeleteDuplicates), ListNode.Parse("[1, 1, 2]"));
+            NewCase(nameof(Solution.DeleteDuplicates), ListNode.Parse("[1, 1, 2, 3, 3]"));
+            NewCase(nameof(Solution.DeleteDuplicates2), ListNode.Parse("[1, 2, 3, 3]"));
+            NewCase(nameof(Solution.DeleteDuplicates3), ListNode.Parse("[1, 1, 2, 3, 3, 4, 5, 6, 7, 7, 8, 8, 9, 9]"));
+            NewCase(nameof(Solution.ReverseList), ListNode.Parse("[1,2,3,4,5,5,99,6]"));
+            NewCase(nameof(Solution.ReverseList2), ListNode.Parse("[1,2,3,4,5,5,99,6]"));
 
-            inputArr = new object[] { 1, 2, 3 };
-            root = new TreeNode(inputArr);
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  MaxPathSum: {s.MaxPathSum(root)}");
-            inputArr = new object[] { -10, 9, 20, null, null, 15, 7 };
-            root = new TreeNode(inputArr);
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  MaxPathSum: {s.MaxPathSum(root)}");
-
-            inputArr = new object[] { 3, 5, 1, 6, 2, 0, 8, null, null, 7, 4 };
-            root = new TreeNode(inputArr);
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  LowestCommonAncestor: {s.LowestCommonAncestor(root, new TreeNode(5), new TreeNode(1))?.val}");
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  LowestCommonAncestor: {s.LowestCommonAncestor(root, new TreeNode(4), new TreeNode(7))?.val}");
-
-            inputArr = new object[] { 3, 9, 20, null, null, 15, 7 };
-            root = new TreeNode(inputArr);
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  LevelOrder: {ListToString(s.LevelOrder(root) as IList)}");
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  LevelOrderBottom: {ListToString(s.LevelOrderBottom(root) as IList)}");
-
-
-            inputArr = new object[] { 3, 9, 20, null, null, 15, 7 };
-            root = new TreeNode(inputArr);
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  ZigzagLevelOrder: {ListToString(s.ZigzagLevelOrder(root) as IList)}");
-
-            inputArr = new object[] { 3, 1, 5, 0, 2, 4, 6, null, null, null, 3 };
-            root = new TreeNode(inputArr);
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  ZigzagLevelOrder: {ListToString(s.ZigzagLevelOrder(root) as IList)}");
-
-            inputArr = new object[] { 2, 1, 3 };
-            root = new TreeNode(inputArr);
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsValidBST: {s.IsValidBST(root)}");
-
-            inputArr = new object[] { 5, 1, 4, null, null, 3, 6 };
-            root = new TreeNode(inputArr);
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsValidBST: {s.IsValidBST(root)}");
-
-            inputArr = new object[] { 10, 5, 15, null, null, 6, 20 };
-            root = new TreeNode(inputArr);
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsValidBST: {s.IsValidBST(root)}");
-
-            inputArr = new object[] { 10, 5, 15, null, null, 13, 20 };
-            root = new TreeNode(inputArr);
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsValidBST: {s.IsValidBST(root)}");
-
-            inputArr = new object[] { 3, 1, 5, 0, 2, 4, 6, null, null, null, 3 };
-            root = new TreeNode(inputArr);
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsValidBST: {s.IsValidBST(root)}");
-
-            inputArr = new object[] { 4, 2, 7, 1, 3 };
-            root = new TreeNode(inputArr);
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  InsertIntoBST: {TreeArrayToString(s.InsertIntoBST(root, 5).ToArray())}");
-
-
-            var inputLinkArr = new int[] { 1, 1, 2 };
-            var head = new ListNode(inputLinkArr);
-            Console.WriteLine($"input: {ListToString(inputLinkArr)}  DeleteDuplicates: {ListToString(s.DeleteDuplicates(head).ToArray())}");
-
-            inputLinkArr = new int[] { 1, 1, 2, 3, 3 };
-            head = new ListNode(inputLinkArr);
-            Console.WriteLine($"input: {ListToString(inputLinkArr)}  DeleteDuplicates: {ListToString(s.DeleteDuplicates(head).ToArray())}");
-
-            inputLinkArr = new int[] { 1,2, 3,3 };
-            head = new ListNode(inputLinkArr);
-            Console.WriteLine($"input: {ListToString(inputLinkArr)}  DeleteDuplicates2: {ListToString(s.DeleteDuplicates2(head).ToArray())}");
-
-            inputLinkArr = new int[] { 1, 1, 2, 3, 3,4,5,6,7,7,8,8,9,9 };
-            head = new ListNode(inputLinkArr);
-            Console.WriteLine($"input: {ListToString(inputLinkArr)}  DeleteDuplicates3: {ListToString(s.DeleteDuplicates3(head).ToArray())}");
         }
     }
 }
