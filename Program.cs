@@ -214,6 +214,14 @@ namespace LeetCodeCS
             inputLinkArr = new int[] { 1, 1, 2, 3, 3 };
             head = new ListNode(inputLinkArr);
             Console.WriteLine($"input: {ListToString(inputLinkArr)}  DeleteDuplicates: {ListToString(s.DeleteDuplicates(head).ToArray())}");
+
+            inputLinkArr = new int[] { 1,2, 3,3 };
+            head = new ListNode(inputLinkArr);
+            Console.WriteLine($"input: {ListToString(inputLinkArr)}  DeleteDuplicates2: {ListToString(s.DeleteDuplicates2(head).ToArray())}");
+
+            inputLinkArr = new int[] { 1, 1, 2, 3, 3,4,5,6,7,7,8,8,9,9 };
+            head = new ListNode(inputLinkArr);
+            Console.WriteLine($"input: {ListToString(inputLinkArr)}  DeleteDuplicates3: {ListToString(s.DeleteDuplicates3(head).ToArray())}");
         }
     }
 }
