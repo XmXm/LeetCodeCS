@@ -9,6 +9,40 @@ public class TreeNode
     public TreeNode left;
     public TreeNode right;
     public TreeNode(int x) { val = x; }
+    public object[] ToArray()
+    {
+        var arr = new List<object>();
+        var queue = new Queue<TreeNode>();
+        queue.Enqueue(this);
+        while (queue.Count > 0)
+        {
+            var len = queue.Count;
+            for (var i = 0; i < len; i++)
+            {
+                var node = queue.Dequeue();
+                if (node != null)
+                {
+                    arr.Add(node.val);
+                    queue.Enqueue(node.left);
+                    queue.Enqueue(node.right);
+                }
+                else
+                {
+                    arr.Add(null);
+                }
+            }
+        }
+        int nullIndex;
+        for (nullIndex = arr.Count; nullIndex > 0; nullIndex--)
+        {
+            if (arr[nullIndex - 1] != null)
+            {
+                break;
+            }
+        }
+        arr.RemoveRange(nullIndex, arr.Count - nullIndex);
+        return arr.ToArray();
+    }
 }
 
 namespace LeetCodeCS
@@ -38,6 +72,7 @@ namespace LeetCodeCS
             }
             return ret;
         }
+
         static string TreeArrayToString(object[] objs)
         {
             var str = new StringBuilder();
@@ -112,6 +147,15 @@ namespace LeetCodeCS
             Console.WriteLine($"input: {TreeArrayToString(inputArr)}  LevelOrder: {ListToString(s.LevelOrder(root) as IList)}");
             Console.WriteLine($"input: {TreeArrayToString(inputArr)}  LevelOrderBottom: {ListToString(s.LevelOrderBottom(root) as IList)}");
 
+
+            inputArr = new object[] { 3, 9, 20, null, null, 15, 7 };
+            root = MakeTreeNode(inputArr);
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  ZigzagLevelOrder: {ListToString(s.ZigzagLevelOrder(root) as IList)}");
+
+            inputArr = new object[] { 3, 1, 5, 0, 2, 4, 6, null, null, null, 3 };
+            root = MakeTreeNode(inputArr);
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  ZigzagLevelOrder: {ListToString(s.ZigzagLevelOrder(root) as IList)}");
+
             inputArr = new object[] { 2, 1, 3 };
             root = MakeTreeNode(inputArr);
             Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsValidBST: {s.IsValidBST(root)}");
@@ -120,25 +164,21 @@ namespace LeetCodeCS
             root = MakeTreeNode(inputArr);
             Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsValidBST: {s.IsValidBST(root)}");
 
-            inputArr = new object[] {10,5,15,null,null,6,20};
-            root = MakeTreeNode(inputArr);
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsValidBST: {s.IsValidBST(root)}");
-            
-            inputArr = new object[] {10,5,15,null,null,13,20};
+            inputArr = new object[] { 10, 5, 15, null, null, 6, 20 };
             root = MakeTreeNode(inputArr);
             Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsValidBST: {s.IsValidBST(root)}");
 
-            inputArr = new object[] { 3, 9, 20, null, null, 15, 7 };
-            root = MakeTreeNode(inputArr);
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  ZigzagLevelOrder: {ListToString(s.ZigzagLevelOrder(root) as IList)}");
-
-            inputArr = new object[] {3,1,5,0,2,4,6,null,null,null,3};
-            root = MakeTreeNode(inputArr);
-            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  ZigzagLevelOrder: {ListToString(s.ZigzagLevelOrder(root) as IList)}");
-            
-            inputArr = new object[] {3,1,5,0,2,4,6,null,null,null,3};
+            inputArr = new object[] { 10, 5, 15, null, null, 13, 20 };
             root = MakeTreeNode(inputArr);
             Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsValidBST: {s.IsValidBST(root)}");
+
+            inputArr = new object[] { 3, 1, 5, 0, 2, 4, 6, null, null, null, 3 };
+            root = MakeTreeNode(inputArr);
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  IsValidBST: {s.IsValidBST(root)}");
+
+            inputArr = new object[] { 4, 2, 7, 1, 3 };
+            root = MakeTreeNode(inputArr);
+            Console.WriteLine($"input: {TreeArrayToString(inputArr)}  InsertIntoBST: {TreeArrayToString(s.InsertIntoBST(root, 5).ToArray())}");
         }
     }
 }
