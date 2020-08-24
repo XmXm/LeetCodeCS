@@ -266,6 +266,8 @@ namespace LeetCodeCS
             NewCase(nameof(Solution.DeleteDuplicates3), ListNode.Parse("[1, 1, 2, 3, 3, 4, 5, 6, 7, 7, 8, 8, 9, 9]"));
             NewCase(nameof(Solution.ReverseList), ListNode.Parse("[1,2,3,4,5,5,99,6]"));
             NewCase(nameof(Solution.ReverseList2), ListNode.Parse("[1,2,3,4,5,5,99,6]"));
+            NewCase(nameof(Solution.ReverseBetween), ListNode.Parse("[1,2,3,4,5,5,99,6]"),2,4);
+            NewCase(nameof(Solution.ReverseBetween), ListNode.Parse("[1,2,3,4,5,5,99,6]"),1,3);
 
         }
     }
