@@ -115,21 +115,42 @@ public class ListNode
             p = p.next;
         }
     }
-    public static ListNode Parse(string str)
+    public static ListNode Parse(string str, int cyclePos = -1)
     {
         var objs = str.Replace("[", "").Replace("]", "").Split(',', StringSplitOptions.RemoveEmptyEntries).Select(m => int.Parse(m)).ToArray();
         if (objs.Length == 0)
         {
             return null;
         }
-        return new ListNode(objs);
+        var head = new ListNode(objs);
+        if (cyclePos >= 0)
+        {
+            var cyclePoint = head;
+            for (var i = 1; i <= cyclePos; i++)
+            {
+                cyclePoint = cyclePoint.next;
+                if (cyclePoint == null)
+                {
+                    return head;
+                }
+            }
+            var tail = head;
+            while (tail.next != null)
+            {
+                tail = tail.next;
+            }
+            tail.next = cyclePoint;
+        }
+        return head;
     }
     public int[] ToArray()
     {
         var list = new List<int>();
         var p = this;
-        while (p != null)
+        var eachs = new HashSet<ListNode>();
+        while (p != null && !eachs.Contains(p))
         {
+            eachs.Add(p);
             list.Add(p.val);
             p = p.next;
         }
@@ -277,6 +298,8 @@ namespace LeetCodeCS
             NewCase(nameof(Solution.SortList), ListNode.Parse("[4,2,1,3]"));
             NewCase(nameof(Solution.SortList), ListNode.Parse("[-1,5,3,4,0]"));
             NewCase(nameof(Solution.ReorderList), ListNode.Parse("[1,2,3,4,5]"));
+            NewCase(nameof(Solution.HasCycle), ListNode.Parse("[1,2,3,4,5]", 2));
+
 
         }
     }
