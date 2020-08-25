@@ -310,6 +310,7 @@ namespace LeetCodeCS
             NewCase(nameof(Solution.ReorderList), ListNode.Parse("[1,2,3,4,5]"));
             NewCase(nameof(Solution.HasCycle), ListNode.Parse("[1,2,3,4,5]", 2));
             NewCase(nameof(Solution.DetectCycle), ListNode.Parse("[1,2,3,4,5,6]", 2));
+            NewCase(nameof(Solution.IsPalindrome), ListNode.Parse("[1,2,3,2,1]"));
 
 
         }
