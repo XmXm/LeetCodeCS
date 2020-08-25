@@ -143,14 +143,19 @@ public class ListNode
         }
         return head;
     }
-    public int[] ToArray()
+    public int[] ToArray(out int cyclePos)
     {
         var list = new List<int>();
         var p = this;
-        var eachs = new HashSet<ListNode>();
-        while (p != null && !eachs.Contains(p))
+        cyclePos = -1;
+        var eachs = new Dictionary<ListNode, int>();
+        while (p != null)
         {
-            eachs.Add(p);
+            if (eachs.TryGetValue(p, out cyclePos))
+            {
+                break;
+            }
+            eachs.Add(p, list.Count);
             list.Add(p.val);
             p = p.next;
         }
@@ -158,7 +163,12 @@ public class ListNode
     }
     public override string ToString()
     {
-        return ToArray().ToListString();
+        var arrStr = ToArray(out var cyclePos).ToListString();
+        // if (cyclePos >= 0)
+        // {
+        //     arrStr = $"{arrStr} tail connects to node index:{cyclePos}";
+        // }
+        return arrStr;
     }
 }
 
@@ -299,6 +309,7 @@ namespace LeetCodeCS
             NewCase(nameof(Solution.SortList), ListNode.Parse("[-1,5,3,4,0]"));
             NewCase(nameof(Solution.ReorderList), ListNode.Parse("[1,2,3,4,5]"));
             NewCase(nameof(Solution.HasCycle), ListNode.Parse("[1,2,3,4,5]", 2));
+            NewCase(nameof(Solution.DetectCycle), ListNode.Parse("[1,2,3,4,5,6]", 2));
 
 
         }

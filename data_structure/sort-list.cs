@@ -5,8 +5,7 @@ public partial class Solution
 {
     /// <summary>
     /// 1 2 3 4 5 6
-    /// 1 2    3
-    /// 2 3 4  5 6
+    /// 1#2 2#34 3#56 
     /// </summary>
     /// <param name="head"></param>
     /// <returns></returns>
