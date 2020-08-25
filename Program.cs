@@ -209,7 +209,7 @@ namespace LeetCodeCS
                 }
 
                 var ps = m.GetParameters();
-                return !ps.Where((t1, i) => !t1.ParameterType.IsAssignableFrom(args[i]?.GetType())).Any();
+                return ps.Where((t1, i) => (t1.ParameterType.IsClass && args[i] == null) || t1.ParameterType.IsAssignableFrom(args[i]?.GetType())).Any();
             });
             return ms?.Invoke(o, args);
         }
@@ -231,6 +231,10 @@ namespace LeetCodeCS
                 Console.WriteLine(Object2String(o));
             }
             var result = InvokeInstanceMethod(sSolution, methodName, objs);
+            if (result == null)
+            {
+                result = objs[0];
+            }
             Console.WriteLine("Output:");
             Console.WriteLine(Object2String(result));
             Console.WriteLine("---------------------------------------------------");
@@ -266,10 +270,13 @@ namespace LeetCodeCS
             NewCase(nameof(Solution.DeleteDuplicates3), ListNode.Parse("[1, 1, 2, 3, 3, 4, 5, 6, 7, 7, 8, 8, 9, 9]"));
             NewCase(nameof(Solution.ReverseList), ListNode.Parse("[1,2,3,4,5,5,99,6]"));
             NewCase(nameof(Solution.ReverseList2), ListNode.Parse("[1,2,3,4,5,5,99,6]"));
-            NewCase(nameof(Solution.ReverseBetween), ListNode.Parse("[1,2,3,4,5,5,99,6]"),2,4);
-            NewCase(nameof(Solution.ReverseBetween), ListNode.Parse("[1,2,3,4,5,5,99,6]"),1,3);
-            NewCase(nameof(Solution.MergeTwoLists), ListNode.Parse("[1,2,4,6]"),ListNode.Parse("[1,3,4,4,5]"));
-            NewCase(nameof(Solution.Partition), ListNode.Parse("[1,4,3,2,5,2]"),4);
+            NewCase(nameof(Solution.ReverseBetween), ListNode.Parse("[1,2,3,4,5,5,99,6]"), 2, 4);
+            NewCase(nameof(Solution.ReverseBetween), ListNode.Parse("[1,2,3,4,5,5,99,6]"), 1, 3);
+            NewCase(nameof(Solution.MergeTwoLists), ListNode.Parse("[1,2,4,6]"), ListNode.Parse("[1,3,4,4,5]"));
+            NewCase(nameof(Solution.Partition), ListNode.Parse("[1,4,3,2,5,2]"), 4);
+            NewCase(nameof(Solution.SortList), ListNode.Parse("[4,2,1,3]"));
+            NewCase(nameof(Solution.SortList), ListNode.Parse("[-1,5,3,4,0]"));
+            NewCase(nameof(Solution.ReorderList), ListNode.Parse("[1,2,3,4,5]"));
 
         }
     }

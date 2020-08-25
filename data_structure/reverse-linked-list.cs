@@ -8,7 +8,7 @@ public partial class Solution
     /// </summary>
     /// <param name="head"></param>
     /// <returns></returns>
-    public ListNode ReverseList(ListNode head)
+    public ListNode ReverseList2(ListNode head)
     {
         if (head?.next == null)
         {
@@ -16,7 +16,7 @@ public partial class Solution
         }
         var p = head.next;
         head.next = null;
-        var prev = ReverseList(p);
+        var prev = ReverseList2(p);
         p.next = head;
         return prev;
     }
@@ -26,7 +26,7 @@ public partial class Solution
     /// </summary>
     /// <param name="head"></param>
     /// <returns></returns>
-    public ListNode ReverseList2(ListNode head)
+    public ListNode ReverseList(ListNode head)
     {
         ListNode prev = null;
         while (head != null)
