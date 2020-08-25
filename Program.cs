@@ -172,9 +172,88 @@ public class ListNode
     }
 }
 
+public class Node
+{
+    public int val;
+    public Node next;
+    public Node random;
+    public Node(int _val)
+    {
+        val = _val;
+        next = null;
+        random = null;
+    }
+
+    public override string ToString()
+    {
+        var list = new List<int[]>();
+        var p = this;
+        var dict = new Dictionary<Node, int>();
+        var index = 0;
+        while (p != null)
+        {
+            dict.Add(p, index++);
+            p = p.next;
+        }
+        p = this;
+        while (p != null)
+        {
+            list.Add(new int[] { p.val, p.random != null ? dict[p.random] : -1 });
+            p = p.next;
+        }
+        return list.ToListString((o) => ((int)o) == -1 ? "null" : null);
+    }
+    public static Node Parse(string str)
+    {
+        //[[3,null [3,0 [3,null]]
+        var arr = str.Split("],", 256, StringSplitOptions.RemoveEmptyEntries);
+        var listNodes = new List<Node>();
+        var randomIndexs = new List<int>();
+        for (var i = 0; i < arr.Length; i++)
+        {
+            var objArr = arr[i].Replace("[", "").Replace("]", "").Split(',', StringSplitOptions.RemoveEmptyEntries);
+            if (objArr.Length == 2)
+            {
+                var node = new Node(int.Parse(objArr[0]));
+                listNodes.Add(node);
+                if (objArr[1] == "null")
+                {
+                    randomIndexs.Add(-1);
+                }
+                else
+                {
+                    randomIndexs.Add(int.Parse(objArr[1]));
+                }
+            }
+
+        }
+        if (listNodes.All(m => m == null))
+        {
+            return null;
+        }
+        for (var i = 0; i < listNodes.Count; i++)
+        {
+            if (i < listNodes.Count - 1)
+            {
+                listNodes[i].next = listNodes[i + 1];
+            }
+            var randomIndex = randomIndexs[i];
+            if (randomIndex >= 0)
+            {
+                listNodes[i].random = listNodes[randomIndex];
+            }
+        }
+        return listNodes[0];
+    }
+}
+
 public static class ExtentionMethod
 {
-    public static string ToListString(this IList l)
+    // public static object Deserialize(string str)
+    // {
+    //     throw new NotImplementedException();
+    // }
+    public static string ToListString(this IList l, Func<object, string> predicate = null)
     {
         var str = new StringBuilder();
         str.Append('[');
@@ -183,11 +262,16 @@ public static class ExtentionMethod
             var o = l[i];
             if (o is IList subL)
             {
-                str.Append(subL.ToListString());
+                str.Append(subL.ToListString(predicate));
             }
             else
             {
-                str.Append(o.ToString());
+                var oStr = predicate?.Invoke(o);
+                if (string.IsNullOrEmpty(oStr))
+                {
+                    oStr = o.ToString();
+                }
+                str.Append(oStr);
             }
             if (i < l.Count - 1)
             {
@@ -311,6 +395,7 @@ namespace LeetCodeCS
             NewCase(nameof(Solution.HasCycle), ListNode.Parse("[1,2,3,4,5]", 2));
             NewCase(nameof(Solution.DetectCycle), ListNode.Parse("[1,2,3,4,5,6]", 2));
             NewCase(nameof(Solution.IsPalindrome), ListNode.Parse("[1,2,3,2,1]"));
+            NewCase(nameof(Solution.CopyRandomList), Node.Parse("[[7,null],[13,0],[11,4],[10,2],[1,0]]"));
 
 
         }
