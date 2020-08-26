@@ -286,27 +286,7 @@ namespace LeetCodeCS
 {
     class Program
     {
-        private static readonly Dictionary<Type, MethodInfo[]> sCacheStaticMethods = new Dictionary<Type, MethodInfo[]>();
         private static readonly Dictionary<Type, MethodInfo[]> sCacheInstanceMethods = new Dictionary<Type, MethodInfo[]>();
-        public static object InvokeStaticMethod(Type t, string methodName, params object[] args)
-        {
-            if (!sCacheStaticMethods.TryGetValue(t, out var methodInfos))
-            {
-                methodInfos = t.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
-                sCacheStaticMethods.Add(t, methodInfos);
-            }
-            var ms = methodInfos.FirstOrDefault(m =>
-            {
-                if (m.Name != methodName)
-                {
-                    return false;
-                }
-
-                var ps = m.GetParameters();
-                return !ps.Where((t1, i) => !t1.ParameterType.IsAssignableFrom(args[i]?.GetType())).Any();
-            });
-            return ms?.Invoke(null, args);
-        }
         public static object InvokeInstanceMethod(object o, string methodName, params object[] args)
         {
             var t = o.GetType();
@@ -328,6 +308,10 @@ namespace LeetCodeCS
                 {
                     return true;
                 }
+                if (ps.Length == 1 && ps[0].ParameterType.IsArray)
+                {
+                    return true;
+                }
                 return ps.Where((t1, i) => (t1.ParameterType.IsClass && args[i] == null) || t1.ParameterType.IsAssignableFrom(args[i]?.GetType())).Any();
             });
             return ms?.Invoke(o, args);
@@ -344,10 +328,13 @@ namespace LeetCodeCS
         public enum OutputOption
         {
             UseReturnVal,
-            UseInstance,
-            UseFirstArg
+            UseInstance
         }
         private static OutputOption sOutputOption;
+        static void NewCaseArrayInput(object instance, string methodName, object obj)
+        {
+            NewCase(instance, methodName, new object[] { obj });
+        }
         static void NewCase(object instance, string methodName, params object[] objs)
         {
             Console.WriteLine($"###############{instance.GetType().Name}.{methodName}###############");
@@ -359,7 +346,7 @@ namespace LeetCodeCS
             var result = InvokeInstanceMethod(instance, methodName, objs);
             if (result == null)
             {
-                if (objs.Length > 0 && sOutputOption == OutputOption.UseFirstArg)
+                if (objs.Length > 0 && sOutputOption == OutputOption.UseReturnVal)
                 {
                     result = objs[0];
                 }
@@ -425,6 +412,12 @@ namespace LeetCodeCS
             NewCase(minStack, nameof(MinStack.Pop));
             NewCase(minStack, nameof(MinStack.Pop));
             NewCase(minStack, nameof(MinStack.GetMin));
+
+            sOutputOption = OutputOption.UseReturnVal;
+
+            NewCaseArrayInput(s, nameof(Solution.EvalRPN), new string[] { "2", "1", "+", "3", "*" });
+            NewCaseArrayInput(s, nameof(Solution.EvalRPN), new string[] { "4", "13", "5", "/", "+" });
+            NewCaseArrayInput(s, nameof(Solution.EvalRPN), new string[] { "10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"});
 
         }
     }
