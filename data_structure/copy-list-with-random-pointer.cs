@@ -4,6 +4,11 @@ using System.Collections.Generic;
 /// </summary>
 public partial class Solution
 {
+    /// <summary>
+    /// Dictionary 哈希实现
+    /// </summary>
+    /// <param name="head"></param>
+    /// <returns></returns>
     public Node CopyRandomList2(Node head)
     {
         if (head == null)
@@ -51,13 +56,17 @@ public partial class Solution
         }
         return cloneMap[0];
     }
+    /// <summary>
+    /// 链表内哈希实现1->2->3  ==>  1->1'->2->2'->3->3'
+    /// </summary>
+    /// <param name="head"></param>
+    /// <returns></returns>
     public Node CopyRandomList(Node head)
     {
         if (head == null)
         {
             return null;
         }
-        //链表内哈希
         var p = head;
         while (p != null)
         {
@@ -69,7 +78,7 @@ public partial class Solution
 
         p = head;
         //步长为2时，永远存在p.next
-        while (p != null )
+        while (p != null)
         {
             if (p.random != null)
             {

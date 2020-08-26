@@ -324,6 +324,10 @@ namespace LeetCodeCS
                 }
 
                 var ps = m.GetParameters();
+                if (ps.Length == 0 && args.Length == 0)
+                {
+                    return true;
+                }
                 return ps.Where((t1, i) => (t1.ParameterType.IsClass && args[i] == null) || t1.ParameterType.IsAssignableFrom(args[i]?.GetType())).Any();
             });
             return ms?.Invoke(o, args);
@@ -336,67 +340,91 @@ namespace LeetCodeCS
             }
             return o?.ToString();
         }
-        private static Solution sSolution = new Solution();
-        static void NewCase(string methodName, params object[] objs)
+
+        public enum OutputOption
         {
-            Console.WriteLine($"###############{methodName}###############");
+            UseReturnVal,
+            UseInstance,
+            UseFirstArg
+        }
+        private static OutputOption sOutputOption;
+        static void NewCase(object instance, string methodName, params object[] objs)
+        {
+            Console.WriteLine($"###############{instance.GetType().Name}.{methodName}###############");
             Console.WriteLine("Input:");
             foreach (var o in objs)
             {
                 Console.WriteLine(Object2String(o));
             }
-            var result = InvokeInstanceMethod(sSolution, methodName, objs);
+            var result = InvokeInstanceMethod(instance, methodName, objs);
             if (result == null)
             {
-                result = objs[0];
+                if (objs.Length > 0 && sOutputOption == OutputOption.UseFirstArg)
+                {
+                    result = objs[0];
+                }
+                else if (sOutputOption == OutputOption.UseInstance)
+                {
+                    result = instance;
+                }
             }
             Console.WriteLine("Output:");
             Console.WriteLine(Object2String(result));
             Console.WriteLine("---------------------------------------------------");
         }
+        private static Solution sSolution = new Solution();
         static void Main(string[] args)
         {
             var s = new Solution();
-            var root = TreeNode.Parse("[3, 9, 20, null, null, 15, 7]");
-            Console.WriteLine($"input: {root}  MaxDepth: {s.MaxDepth(root)}");
             //二叉树
-            NewCase(nameof(Solution.MaxDepth), TreeNode.Parse("[3, 9, 20, null, null, 15, 7]"));
-            NewCase(nameof(Solution.IsBalanced), TreeNode.Parse("[3, 9, 20, null, null, 15, 7]"));
-            NewCase(nameof(Solution.IsBalanced), TreeNode.Parse("[1, 2, 2, 3, 3, null, null, 4, 4]"));
-            NewCase(nameof(Solution.MaxPathSum), TreeNode.Parse("[1, 2, 3]"));
-            NewCase(nameof(Solution.MaxPathSum), TreeNode.Parse("[-10, 9, 20, null, null, 15, 7]"));
-            NewCase(nameof(Solution.LowestCommonAncestor), TreeNode.Parse("[3, 5, 1, 6, 2, 0, 8, null, null, 7, 4]"), new TreeNode(5), new TreeNode(1));
-            NewCase(nameof(Solution.LowestCommonAncestor), TreeNode.Parse("[3, 5, 1, 6, 2, 0, 8, null, null, 7, 4]"), new TreeNode(4), new TreeNode(7));
-            NewCase(nameof(Solution.LevelOrder), TreeNode.Parse("[3, 9, 20, null, null, 15, 7]"));
-            NewCase(nameof(Solution.LevelOrderBottom), TreeNode.Parse("[3, 9, 20, null, null, 15, 7]"));
-            NewCase(nameof(Solution.ZigzagLevelOrder), TreeNode.Parse("[3, 9, 20, null, null, 15, 7]"));
-            NewCase(nameof(Solution.ZigzagLevelOrder), TreeNode.Parse("[3, 1, 5, 0, 2, 4, 6, null, null, null, 3]"));
-            NewCase(nameof(Solution.IsValidBST), TreeNode.Parse("[2, 1, 3]"));
-            NewCase(nameof(Solution.IsValidBST), TreeNode.Parse("[5, 1, 4, null, null, 3, 6]"));
-            NewCase(nameof(Solution.IsValidBST), TreeNode.Parse("[10, 5, 15, null, null, 6, 20]"));
-            NewCase(nameof(Solution.IsValidBST), TreeNode.Parse("[10, 5, 15, null, null, 13, 20]"));
-            NewCase(nameof(Solution.IsValidBST), TreeNode.Parse("[3, 1, 5, 0, 2, 4, 6, null, null, null, 3]"));
-            NewCase(nameof(Solution.InsertIntoBST), TreeNode.Parse("[4, 2, 7, 1, 3]"), 5);
+            NewCase(s, nameof(Solution.MaxDepth), TreeNode.Parse("[3, 9, 20, null, null, 15, 7]"));
+            NewCase(s, nameof(Solution.IsBalanced), TreeNode.Parse("[3, 9, 20, null, null, 15, 7]"));
+            NewCase(s, nameof(Solution.IsBalanced), TreeNode.Parse("[1, 2, 2, 3, 3, null, null, 4, 4]"));
+            NewCase(s, nameof(Solution.MaxPathSum), TreeNode.Parse("[1, 2, 3]"));
+            NewCase(s, nameof(Solution.MaxPathSum), TreeNode.Parse("[-10, 9, 20, null, null, 15, 7]"));
+            NewCase(s, nameof(Solution.LowestCommonAncestor), TreeNode.Parse("[3, 5, 1, 6, 2, 0, 8, null, null, 7, 4]"), new TreeNode(5), new TreeNode(1));
+            NewCase(s, nameof(Solution.LowestCommonAncestor), TreeNode.Parse("[3, 5, 1, 6, 2, 0, 8, null, null, 7, 4]"), new TreeNode(4), new TreeNode(7));
+            NewCase(s, nameof(Solution.LevelOrder), TreeNode.Parse("[3, 9, 20, null, null, 15, 7]"));
+            NewCase(s, nameof(Solution.LevelOrderBottom), TreeNode.Parse("[3, 9, 20, null, null, 15, 7]"));
+            NewCase(s, nameof(Solution.ZigzagLevelOrder), TreeNode.Parse("[3, 9, 20, null, null, 15, 7]"));
+            NewCase(s, nameof(Solution.ZigzagLevelOrder), TreeNode.Parse("[3, 1, 5, 0, 2, 4, 6, null, null, null, 3]"));
+            NewCase(s, nameof(Solution.IsValidBST), TreeNode.Parse("[2, 1, 3]"));
+            NewCase(s, nameof(Solution.IsValidBST), TreeNode.Parse("[5, 1, 4, null, null, 3, 6]"));
+            NewCase(s, nameof(Solution.IsValidBST), TreeNode.Parse("[10, 5, 15, null, null, 6, 20]"));
+            NewCase(s, nameof(Solution.IsValidBST), TreeNode.Parse("[10, 5, 15, null, null, 13, 20]"));
+            NewCase(s, nameof(Solution.IsValidBST), TreeNode.Parse("[3, 1, 5, 0, 2, 4, 6, null, null, null, 3]"));
+            NewCase(s, nameof(Solution.InsertIntoBST), TreeNode.Parse("[4, 2, 7, 1, 3]"), 5);
 
             //链表
-            NewCase(nameof(Solution.DeleteDuplicates), ListNode.Parse("[1, 1, 2]"));
-            NewCase(nameof(Solution.DeleteDuplicates), ListNode.Parse("[1, 1, 2, 3, 3]"));
-            NewCase(nameof(Solution.DeleteDuplicates2), ListNode.Parse("[1, 2, 3, 3]"));
-            NewCase(nameof(Solution.DeleteDuplicates3), ListNode.Parse("[1, 1, 2, 3, 3, 4, 5, 6, 7, 7, 8, 8, 9, 9]"));
-            NewCase(nameof(Solution.ReverseList), ListNode.Parse("[1,2,3,4,5,5,99,6]"));
-            NewCase(nameof(Solution.ReverseList2), ListNode.Parse("[1,2,3,4,5,5,99,6]"));
-            NewCase(nameof(Solution.ReverseBetween), ListNode.Parse("[1,2,3,4,5,5,99,6]"), 2, 4);
-            NewCase(nameof(Solution.ReverseBetween), ListNode.Parse("[1,2,3,4,5,5,99,6]"), 1, 3);
-            NewCase(nameof(Solution.MergeTwoLists), ListNode.Parse("[1,2,4,6]"), ListNode.Parse("[1,3,4,4,5]"));
-            NewCase(nameof(Solution.Partition), ListNode.Parse("[1,4,3,2,5,2]"), 4);
-            NewCase(nameof(Solution.SortList), ListNode.Parse("[4,2,1,3]"));
-            NewCase(nameof(Solution.SortList), ListNode.Parse("[-1,5,3,4,0]"));
-            NewCase(nameof(Solution.ReorderList), ListNode.Parse("[1,2,3,4,5]"));
-            NewCase(nameof(Solution.HasCycle), ListNode.Parse("[1,2,3,4,5]", 2));
-            NewCase(nameof(Solution.DetectCycle), ListNode.Parse("[1,2,3,4,5,6]", 2));
-            NewCase(nameof(Solution.IsPalindrome), ListNode.Parse("[1,2,3,2,1]"));
-            NewCase(nameof(Solution.CopyRandomList), Node.Parse("[[7,null],[13,0],[11,4],[10,2],[1,0]]"));
+            NewCase(s, nameof(Solution.DeleteDuplicates), ListNode.Parse("[1, 1, 2]"));
+            NewCase(s, nameof(Solution.DeleteDuplicates), ListNode.Parse("[1, 1, 2, 3, 3]"));
+            NewCase(s, nameof(Solution.DeleteDuplicates2), ListNode.Parse("[1, 2, 3, 3]"));
+            NewCase(s, nameof(Solution.DeleteDuplicates3), ListNode.Parse("[1, 1, 2, 3, 3, 4, 5, 6, 7, 7, 8, 8, 9, 9]"));
+            NewCase(s, nameof(Solution.ReverseList), ListNode.Parse("[1,2,3,4,5,5,99,6]"));
+            NewCase(s, nameof(Solution.ReverseList2), ListNode.Parse("[1,2,3,4,5,5,99,6]"));
+            NewCase(s, nameof(Solution.ReverseBetween), ListNode.Parse("[1,2,3,4,5,5,99,6]"), 2, 4);
+            NewCase(s, nameof(Solution.ReverseBetween), ListNode.Parse("[1,2,3,4,5,5,99,6]"), 1, 3);
+            NewCase(s, nameof(Solution.MergeTwoLists), ListNode.Parse("[1,2,4,6]"), ListNode.Parse("[1,3,4,4,5]"));
+            NewCase(s, nameof(Solution.Partition), ListNode.Parse("[1,4,3,2,5,2]"), 4);
+            NewCase(s, nameof(Solution.SortList), ListNode.Parse("[4,2,1,3]"));
+            NewCase(s, nameof(Solution.SortList), ListNode.Parse("[-1,5,3,4,0]"));
+            NewCase(s, nameof(Solution.ReorderList), ListNode.Parse("[1,2,3,4,5]"));
+            NewCase(s, nameof(Solution.HasCycle), ListNode.Parse("[1,2,3,4,5]", 2));
+            NewCase(s, nameof(Solution.DetectCycle), ListNode.Parse("[1,2,3,4,5,6]", 2));
+            NewCase(s, nameof(Solution.IsPalindrome), ListNode.Parse("[1,2,3,2,1]"));
+            NewCase(s, nameof(Solution.CopyRandomList), Node.Parse("[[7,null],[13,0],[11,4],[10,2],[1,0]]"));
 
+
+            //栈
+            MinStack minStack = new MinStack();
+            sOutputOption = OutputOption.UseInstance;
+            NewCase(minStack, nameof(MinStack.Push), -2);
+            NewCase(minStack, nameof(MinStack.Push), 0);
+            NewCase(minStack, nameof(MinStack.Push), -3);
+            NewCase(minStack, nameof(MinStack.GetMin));
+            NewCase(minStack, nameof(MinStack.Pop));
+            NewCase(minStack, nameof(MinStack.Pop));
+            NewCase(minStack, nameof(MinStack.GetMin));
 
         }
     }
