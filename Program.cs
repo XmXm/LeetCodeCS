@@ -417,7 +417,13 @@ namespace LeetCodeCS
 
             NewCaseArrayInput(s, nameof(Solution.EvalRPN), new string[] { "2", "1", "+", "3", "*" });
             NewCaseArrayInput(s, nameof(Solution.EvalRPN), new string[] { "4", "13", "5", "/", "+" });
-            NewCaseArrayInput(s, nameof(Solution.EvalRPN), new string[] { "10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"});
+            NewCaseArrayInput(s, nameof(Solution.EvalRPN), new string[] { "10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+" });
+
+            NewCase(s, nameof(Solution.DecodeString), "3[a]2[bc]");
+            NewCase(s, nameof(Solution.DecodeString), "2[abc]3[cd]ef");
+            NewCase(s, nameof(Solution.DecodeString), "3[a2[c]]");
+            NewCase(s, nameof(Solution.DecodeString), "abc3[cd]xyz");
+
 
         }
     }
