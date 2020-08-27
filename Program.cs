@@ -58,7 +58,7 @@ public class TreeNode
                 cur.left = new TreeNode((int)val);
                 treeQueue.Enqueue(cur.left);
             }
-            val = arr[i + 1];
+            val = i < arr.Length -1 ? arr[i + 1] : null;
             if (val != null)
             {
                 cur.right = new TreeNode((int)val);
@@ -312,6 +312,10 @@ namespace LeetCodeCS
                 {
                     return true;
                 }
+                if (ps.Length != args.Length)
+                {
+                    return false;
+                }
                 return ps.Where((t1, i) => (t1.ParameterType.IsClass && args[i] == null) || t1.ParameterType.IsAssignableFrom(args[i]?.GetType())).Any();
             });
             return ms?.Invoke(o, args);
@@ -423,6 +427,7 @@ namespace LeetCodeCS
             NewCase(s, nameof(Solution.DecodeString), "2[abc]3[cd]ef");
             NewCase(s, nameof(Solution.DecodeString), "3[a2[c]]");
             NewCase(s, nameof(Solution.DecodeString), "abc3[cd]xyz");
+            NewCase(s, nameof(Solution.InorderTraversal), TreeNode.Parse("[1,null,2,3]"));
 
 
         }
