@@ -58,7 +58,7 @@ public class TreeNode
                 cur.left = new TreeNode((int)val);
                 treeQueue.Enqueue(cur.left);
             }
-            val = i < arr.Length -1 ? arr[i + 1] : null;
+            val = i < arr.Length - 1 ? arr[i + 1] : null;
             if (val != null)
             {
                 cur.right = new TreeNode((int)val);
@@ -171,82 +171,150 @@ public class ListNode
         return arrStr;
     }
 }
-
-public class Node
+namespace LinkList
 {
-    public int val;
-    public Node next;
-    public Node random;
-    public Node(int _val)
+    public class Node
     {
-        val = _val;
-        next = null;
-        random = null;
-    }
+        public int val;
+        public Node next;
+        public Node random;
+        public Node(int _val)
+        {
+            val = _val;
+            next = null;
+            random = null;
+        }
 
-    public override string ToString()
-    {
-        var list = new List<int[]>();
-        var p = this;
-        var dict = new Dictionary<Node, int>();
-        var index = 0;
-        while (p != null)
+        public override string ToString()
         {
-            dict.Add(p, index++);
-            p = p.next;
-        }
-        p = this;
-        while (p != null)
-        {
-            list.Add(new int[] { p.val, p.random != null ? dict[p.random] : -1 });
-            p = p.next;
-        }
-        return list.ToListString((o) => ((int)o) == -1 ? "null" : null);
-    }
-    public static Node Parse(string str)
-    {
-        //[[3,null [3,0 [3,null]]
-        var arr = str.Split("],", 256, StringSplitOptions.RemoveEmptyEntries);
-        var listNodes = new List<Node>();
-        var randomIndexs = new List<int>();
-        for (var i = 0; i < arr.Length; i++)
-        {
-            var objArr = arr[i].Replace("[", "").Replace("]", "").Split(',', StringSplitOptions.RemoveEmptyEntries);
-            if (objArr.Length == 2)
+            var list = new List<int[]>();
+            var p = this;
+            var dict = new Dictionary<Node, int>();
+            var index = 0;
+            while (p != null)
             {
-                var node = new Node(int.Parse(objArr[0]));
-                listNodes.Add(node);
-                if (objArr[1] == "null")
-                {
-                    randomIndexs.Add(-1);
-                }
-                else
-                {
-                    randomIndexs.Add(int.Parse(objArr[1]));
-                }
+                dict.Add(p, index++);
+                p = p.next;
             }
+            p = this;
+            while (p != null)
+            {
+                list.Add(new int[] { p.val, p.random != null ? dict[p.random] : -1 });
+                p = p.next;
+            }
+            return list.ToListString((o) => ((int)o) == -1 ? "null" : null);
+        }
+        public static Node Parse(string str)
+        {
+            //[[3,null [3,0 [3,null]]
+            var arr = str.Split("],", 256, StringSplitOptions.RemoveEmptyEntries);
+            var listNodes = new List<Node>();
+            var randomIndexs = new List<int>();
+            for (var i = 0; i < arr.Length; i++)
+            {
+                var objArr = arr[i].Replace("[", "").Replace("]", "").Split(',', StringSplitOptions.RemoveEmptyEntries);
+                if (objArr.Length == 2)
+                {
+                    var node = new Node(int.Parse(objArr[0]));
+                    listNodes.Add(node);
+                    if (objArr[1] == "null")
+                    {
+                        randomIndexs.Add(-1);
+                    }
+                    else
+                    {
+                        randomIndexs.Add(int.Parse(objArr[1]));
+                    }
+                }
 
-        }
-        if (listNodes.All(m => m == null))
-        {
-            return null;
-        }
-        for (var i = 0; i < listNodes.Count; i++)
-        {
-            if (i < listNodes.Count - 1)
-            {
-                listNodes[i].next = listNodes[i + 1];
             }
-            var randomIndex = randomIndexs[i];
-            if (randomIndex >= 0)
+            if (listNodes.All(m => m == null))
             {
-                listNodes[i].random = listNodes[randomIndex];
+                return null;
             }
+            for (var i = 0; i < listNodes.Count; i++)
+            {
+                if (i < listNodes.Count - 1)
+                {
+                    listNodes[i].next = listNodes[i + 1];
+                }
+                var randomIndex = randomIndexs[i];
+                if (randomIndex >= 0)
+                {
+                    listNodes[i].random = listNodes[randomIndex];
+                }
+            }
+            return listNodes[0];
         }
-        return listNodes[0];
     }
 }
 
+namespace Graph
+{
+    public class Node
+    {
+        public int val;
+        public IList<Node> neighbors;
+
+        public Node()
+        {
+            val = 0;
+            neighbors = new List<Node>();
+        }
+
+        public Node(int _val)
+        {
+            val = _val;
+            neighbors = new List<Node>();
+        }
+
+        public Node(int _val, List<Node> _neighbors)
+        {
+            val = _val;
+            neighbors = _neighbors;
+        }
+
+        public void CollectNode(ICollection<Node> sets)
+        {
+            if (sets.Contains(this))
+            {
+                return;
+            }
+            sets.Add(this);
+            foreach (var item in neighbors)
+            {
+                item.CollectNode(sets);
+            }
+        }
+
+        public override string ToString()
+        {
+            var visited = new HashSet<Node>();
+            CollectNode(visited);
+            var list = visited.ToList();
+            list.Sort((x,y)=>x.val.CompareTo(y.val));
+            return list.ToListString(o=>((Node)o).neighbors.Select(n=>n.val).ToList().ToListString());
+        }
+        public static Node Parse(string str)
+        {
+            var arr = str.Split("],", 256, StringSplitOptions.RemoveEmptyEntries);
+            var nodes = new Node[arr.Length];
+            for (var i = 0; i < arr.Length; i++)
+            {
+                nodes[i] = new Node(i + 1);
+            }
+            for (var i = 0; i < arr.Length; i++)
+            {
+                var objArr = arr[i].Replace("[", "").Replace("]", "").Split(',', StringSplitOptions.RemoveEmptyEntries);
+                foreach (var item in objArr)
+                {
+                    nodes[i].neighbors.Add(nodes[int.Parse(item) - 1]);
+                }
+            }
+            return nodes[0];
+        }
+    }
+}
 public static class ExtentionMethod
 {
     // public static object Deserialize(string str)
@@ -403,7 +471,7 @@ namespace LeetCodeCS
             NewCase(s, nameof(Solution.HasCycle), ListNode.Parse("[1,2,3,4,5]", 2));
             NewCase(s, nameof(Solution.DetectCycle), ListNode.Parse("[1,2,3,4,5,6]", 2));
             NewCase(s, nameof(Solution.IsPalindrome), ListNode.Parse("[1,2,3,2,1]"));
-            NewCase(s, nameof(Solution.CopyRandomList), Node.Parse("[[7,null],[13,0],[11,4],[10,2],[1,0]]"));
+            NewCase(s, nameof(Solution.CopyRandomList), LinkList.Node.Parse("[[7,null],[13,0],[11,4],[10,2],[1,0]]"));
 
 
             //栈
@@ -428,6 +496,7 @@ namespace LeetCodeCS
             NewCase(s, nameof(Solution.DecodeString), "3[a2[c]]");
             NewCase(s, nameof(Solution.DecodeString), "abc3[cd]xyz");
             NewCase(s, nameof(Solution.InorderTraversal), TreeNode.Parse("[1,null,2,3]"));
+            NewCase(s, nameof(Solution.CloneGraph), Graph.Node.Parse("[[2,4],[1,3],[2,4],[1,3]]"));
 
 
         }

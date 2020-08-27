@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using LinkList;
 /// <summary>
 /// https://leetcode-cn.com/problems/copy-list-with-random-pointer/
 /// </summary>
