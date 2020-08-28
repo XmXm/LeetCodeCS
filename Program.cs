@@ -292,8 +292,8 @@ namespace Graph
             var visited = new HashSet<Node>();
             CollectNode(visited);
             var list = visited.ToList();
-            list.Sort((x,y)=>x.val.CompareTo(y.val));
-            return list.ToListString(o=>((Node)o).neighbors.Select(n=>n.val).ToList().ToListString());
+            list.Sort((x, y) => x.val.CompareTo(y.val));
+            return list.ToListString(o => ((Node)o).neighbors.Select(n => n.val).ToList().ToListString());
         }
         public static Node Parse(string str)
         {
@@ -399,13 +399,28 @@ namespace LeetCodeCS
 
         public enum OutputOption
         {
-            UseReturnVal,
+            UseFirstParam,
             UseInstance
         }
-        private static OutputOption sOutputOption;
+        private static Stack<OutputOption> sOutputOptions = new Stack<OutputOption>();
         static void NewCaseArrayInput(object instance, string methodName, object obj)
         {
             NewCase(instance, methodName, new object[] { obj });
+        }
+        class DisposeOutputOption : IDisposable
+        {
+            public DisposeOutputOption(OutputOption opt)
+            {
+                sOutputOptions.Push(opt);
+            }
+            public void Dispose()
+            {
+                sOutputOptions.Pop();
+            }
+        }
+        static IDisposable UsingOutput(OutputOption opt)
+        {
+            return new DisposeOutputOption(opt);
         }
         static void NewCase(object instance, string methodName, params object[] objs)
         {
@@ -416,13 +431,17 @@ namespace LeetCodeCS
                 Console.WriteLine(Object2String(o));
             }
             var result = InvokeInstanceMethod(instance, methodName, objs);
+            if (sOutputOptions.Count == 0)
+            {
+                sOutputOptions.Push(OutputOption.UseFirstParam);
+            }
             if (result == null)
             {
-                if (objs.Length > 0 && sOutputOption == OutputOption.UseReturnVal)
+                if (objs.Length > 0 && sOutputOptions.Peek() == OutputOption.UseFirstParam)
                 {
                     result = objs[0];
                 }
-                else if (sOutputOption == OutputOption.UseInstance)
+                else if (sOutputOptions.Peek() == OutputOption.UseInstance)
                 {
                     result = instance;
                 }
@@ -475,17 +494,18 @@ namespace LeetCodeCS
 
 
             //栈
-            MinStack minStack = new MinStack();
-            sOutputOption = OutputOption.UseInstance;
-            NewCase(minStack, nameof(MinStack.Push), -2);
-            NewCase(minStack, nameof(MinStack.Push), 0);
-            NewCase(minStack, nameof(MinStack.Push), -3);
-            NewCase(minStack, nameof(MinStack.GetMin));
-            NewCase(minStack, nameof(MinStack.Pop));
-            NewCase(minStack, nameof(MinStack.Pop));
-            NewCase(minStack, nameof(MinStack.GetMin));
+            using (UsingOutput(OutputOption.UseInstance))
+            {
+                MinStack minStack = new MinStack();
+                NewCase(minStack, nameof(MinStack.Push), -2);
+                NewCase(minStack, nameof(MinStack.Push), 0);
+                NewCase(minStack, nameof(MinStack.Push), -3);
+                NewCase(minStack, nameof(MinStack.GetMin));
+                NewCase(minStack, nameof(MinStack.Pop));
+                NewCase(minStack, nameof(MinStack.Pop));
+                NewCase(minStack, nameof(MinStack.GetMin));
+            }
 
-            sOutputOption = OutputOption.UseReturnVal;
 
             NewCaseArrayInput(s, nameof(Solution.EvalRPN), new string[] { "2", "1", "+", "3", "*" });
             NewCaseArrayInput(s, nameof(Solution.EvalRPN), new string[] { "4", "13", "5", "/", "+" });
@@ -498,6 +518,15 @@ namespace LeetCodeCS
             NewCase(s, nameof(Solution.InorderTraversal), TreeNode.Parse("[1,null,2,3]"));
             NewCase(s, nameof(Solution.CloneGraph), Graph.Node.Parse("[[2,4],[1,3],[2,4],[1,3]]"));
 
+            using (UsingOutput(OutputOption.UseInstance))
+            {
+                MyQueue queue = new MyQueue();
+                NewCase(queue, nameof(MyQueue.Push), 1);
+                NewCase(queue, nameof(MyQueue.Push), 2);
+                NewCase(queue, nameof(MyQueue.Peek));
+                NewCase(queue, nameof(MyQueue.Pop));
+                NewCase(queue, nameof(MyQueue.Empty));
+            }
 
         }
     }
