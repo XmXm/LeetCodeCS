@@ -527,7 +527,20 @@ namespace LeetCodeCS
                 NewCase(queue, nameof(MyQueue.Pop));
                 NewCase(queue, nameof(MyQueue.Empty));
             }
-
+            var matrix = new int[][]
+            {
+                new int[]{0, 0, 0},
+                new int[]{0, 1, 0},
+                new int[]{0, 0, 0},
+            };
+            NewCaseArrayInput(s, nameof(Solution.UpdateMatrix), matrix);
+            matrix = new int[][]
+            {
+                new int[]{0,0,0},
+                new int[]{0,1,0},
+                new int[]{1,1,1},
+            };
+            NewCaseArrayInput(s, nameof(Solution.UpdateMatrix), matrix);
         }
     }
 }
