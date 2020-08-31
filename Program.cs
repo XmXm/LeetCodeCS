@@ -384,7 +384,22 @@ namespace LeetCodeCS
                 {
                     return false;
                 }
-                return ps.Where((t1, i) => (t1.ParameterType.IsClass && args[i] == null) || t1.ParameterType.IsAssignableFrom(args[i]?.GetType())).Any();
+                return ps.Where((t1, i) =>
+                {
+                    if (t1.ParameterType.IsClass && args[i] == null)
+                    {
+                        return true;
+                    }
+                    var t = args[i]?.GetType();
+                    if (t1.ParameterType.IsAssignableFrom(t))
+                    {
+                        return true;
+                    }
+                    if(t.IsPrimitive && t1.ParameterType.IsPrimitive){
+                        return true;
+                    }
+                    return false;
+                }).Any();
             });
             return ms?.Invoke(o, args);
         }
@@ -541,9 +556,10 @@ namespace LeetCodeCS
                 new int[]{1,1,1},
             };
             NewCaseArrayInput(s, nameof(Solution.UpdateMatrix), matrix);
-            NewCase(s, nameof(Solution.SingleNumber), new int[]{4,1,2,1,2});
-            NewCase(s, nameof(Solution.SingleNumberII), new int[]{4,1,1,2,2,1,2});
-            NewCase(s, nameof(Solution.SingleNumberIII), new int[]{1,2,1,3,2,5});
+            NewCase(s, nameof(Solution.SingleNumber), new int[] { 4, 1, 2, 1, 2 });
+            NewCase(s, nameof(Solution.SingleNumberII), new int[] { 4, 1, 1, 2, 2, 1, 2 });
+            NewCase(s, nameof(Solution.SingleNumberIII), new int[] { 1, 2, 1, 3, 2, 5 });
+            NewCase(s, nameof(Solution.HammingWeight), (uint)0b11111111111111111111111111111101);
         }
     }
 }
