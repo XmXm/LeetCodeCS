@@ -541,6 +541,9 @@ namespace LeetCodeCS
                 new int[]{1,1,1},
             };
             NewCaseArrayInput(s, nameof(Solution.UpdateMatrix), matrix);
+            NewCase(s, nameof(Solution.SingleNumber), new int[]{4,1,2,1,2});
+            NewCase(s, nameof(Solution.SingleNumberII), new int[]{4,1,1,2,2,1,2});
+            NewCase(s, nameof(Solution.SingleNumberIII), new int[]{1,2,1,3,2,5});
         }
     }
 }
