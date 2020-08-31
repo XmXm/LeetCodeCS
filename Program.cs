@@ -560,6 +560,8 @@ namespace LeetCodeCS
             NewCase(s, nameof(Solution.SingleNumberII), new int[] { 4, 1, 1, 2, 2, 1, 2 });
             NewCase(s, nameof(Solution.SingleNumberIII), new int[] { 1, 2, 1, 3, 2, 5 });
             NewCase(s, nameof(Solution.HammingWeight), (uint)0b11111111111111111111111111111101);
+            NewCase(s, nameof(Solution.CountBits), 5);
+            NewCase(s, nameof(Solution.reverseBits), (uint)0b00000010100101000001111010011100);
         }
     }
 }
