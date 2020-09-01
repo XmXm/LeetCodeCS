@@ -562,6 +562,7 @@ namespace LeetCodeCS
             NewCase(s, nameof(Solution.HammingWeight), (uint)0b11111111111111111111111111111101);
             NewCase(s, nameof(Solution.CountBits), 5);
             NewCase(s, nameof(Solution.reverseBits), (uint)0b00000010100101000001111010011100);
+            NewCase(s, nameof(Solution.RangeBitwiseAnd),0,1);
         }
     }
 }
