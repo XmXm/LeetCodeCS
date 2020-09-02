@@ -395,7 +395,8 @@ namespace LeetCodeCS
                     {
                         return true;
                     }
-                    if(t.IsPrimitive && t1.ParameterType.IsPrimitive){
+                    if (t.IsPrimitive && t1.ParameterType.IsPrimitive)
+                    {
                         return true;
                     }
                     return false;
@@ -532,6 +533,8 @@ namespace LeetCodeCS
             NewCase(s, nameof(Solution.DecodeString), "abc3[cd]xyz");
             NewCase(s, nameof(Solution.InorderTraversal), TreeNode.Parse("[1,null,2,3]"));
             NewCase(s, nameof(Solution.CloneGraph), Graph.Node.Parse("[[2,4],[1,3],[2,4],[1,3]]"));
+            NewCase(s, nameof(Solution.LargestRectangleArea), new int[] { 2, 1, 5, 6, 2, 3 });
+
 
             using (UsingOutput(OutputOption.UseInstance))
             {
@@ -562,7 +565,8 @@ namespace LeetCodeCS
             NewCase(s, nameof(Solution.HammingWeight), (uint)0b11111111111111111111111111111101);
             NewCase(s, nameof(Solution.CountBits), 5);
             NewCase(s, nameof(Solution.reverseBits), (uint)0b00000010100101000001111010011100);
-            NewCase(s, nameof(Solution.RangeBitwiseAnd),0,1);
+            NewCase(s, nameof(Solution.RangeBitwiseAnd), 0, 1);
+            NewCase(s, nameof(Solution.Search), new int[]{5},9);
         }
     }
 }
