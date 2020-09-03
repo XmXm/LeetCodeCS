@@ -567,6 +567,7 @@ namespace LeetCodeCS
             NewCase(s, nameof(Solution.reverseBits), (uint)0b00000010100101000001111010011100);
             NewCase(s, nameof(Solution.RangeBitwiseAnd), 0, 1);
             NewCase(s, nameof(Solution.Search), new int[]{5},9);
+            NewCase(s, nameof(Solution.SearchInsert), new int[]{1,3,5,7},2);
         }
     }
 }
