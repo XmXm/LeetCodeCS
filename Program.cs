@@ -583,6 +583,9 @@ namespace LeetCodeCS
                 new int[]{23, 30, 34, 50}
             };
             NewCaseArrayInput(s, nameof(Solution.SearchMatrix), matrix, 4);
+
+            s.BadVersion = 5;
+            NewCase(s, nameof(Solution.FirstBadVersion), 4);
         }
     }
 }
