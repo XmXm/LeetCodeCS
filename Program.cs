@@ -419,9 +419,15 @@ namespace LeetCodeCS
             UseInstance
         }
         private static Stack<OutputOption> sOutputOptions = new Stack<OutputOption>();
-        static void NewCaseArrayInput(object instance, string methodName, object obj)
+        static void NewCaseArrayInput(object instance, string methodName, object obj,params object[] args)
         {
-            NewCase(instance, methodName, new object[] { obj });
+            var objs = new object[args.Length + 1];
+            objs[0] = obj;
+            for (var i = 1; i < objs.Length; i++)
+            {
+                objs[i] = args[i - 1];
+            }
+            NewCase(instance, methodName, objs);
         }
         class DisposeOutputOption : IDisposable
         {
@@ -566,8 +572,17 @@ namespace LeetCodeCS
             NewCase(s, nameof(Solution.CountBits), 5);
             NewCase(s, nameof(Solution.reverseBits), (uint)0b00000010100101000001111010011100);
             NewCase(s, nameof(Solution.RangeBitwiseAnd), 0, 1);
-            NewCase(s, nameof(Solution.Search), new int[]{5},9);
-            NewCase(s, nameof(Solution.SearchInsert), new int[]{1,3,5,7},2);
+            NewCase(s, nameof(Solution.Search), new int[] { 5 }, 9);
+            NewCase(s, nameof(Solution.SearchInsert), new int[] { 1, 3, 5, 7 }, 2);
+            NewCase(s, nameof(Solution.SearchInsert), new int[] { 1, 3, 5, 7 }, 2);
+
+            matrix = new int[][]
+            {
+                new int[]{1,   3,  5,  7},
+                new int[]{10, 11, 16, 20},
+                new int[]{23, 30, 34, 50}
+            };
+            NewCaseArrayInput(s, nameof(Solution.SearchMatrix), matrix, 4);
         }
     }
 }
