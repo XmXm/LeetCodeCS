@@ -587,6 +587,8 @@ namespace LeetCodeCS
             s.BadVersion = 5;
             NewCase(s, nameof(Solution.FirstBadVersion), 4);
             NewCase(s, nameof(Solution.FindMin), new int[]{5,6,7,1,2,3,4});
+            NewCase(s, nameof(Solution.FindMinII), new int[]{3,3,1,3});
+            NewCase(s, nameof(Solution.FindMinII), new int[]{1,3,3});
         }
     }
 }
