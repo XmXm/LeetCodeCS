@@ -589,6 +589,8 @@ namespace LeetCodeCS
             NewCase(s, nameof(Solution.FindMin), new int[]{5,6,7,1,2,3,4});
             NewCase(s, nameof(Solution.FindMinII), new int[]{3,3,1,3});
             NewCase(s, nameof(Solution.FindMinII), new int[]{1,3,3});
+            NewCase(s, nameof(Solution.SearchII), new int[]{4,5,6,7,0,1,2},0);
+            NewCase(s, nameof(Solution.SearchIII), new int[]{2,5,6,0,0,1,2},0);
         }
     }
 }
